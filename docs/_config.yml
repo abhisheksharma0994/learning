@@ -16,22 +16,16 @@ kramdown:
   input: GFM
   syntax_highlighter: rouge
 
-# Posts live in _posts and get clean URLs: /posts/<slug>/ (no date in the path).
-# Set per-scope rather than globally, so plain pages keep their own paths.
 defaults:
-  - scope:
-      path: ""
-      type: posts
-    values:
-      layout: post
-      permalink: /posts/:title/
   - scope:
       path: ""
       type: pocs
     values:
       layout: poc
 
-# One page per POC on the site, alongside the code under /pocs in the repo.
+# One page per POC, served at /pocs/<name>/ alongside the code under /pocs in the
+# repo. The page IS the write-up, so there is no separate posts section and
+# nothing to keep in sync between the two.
 collections:
   pocs:
     output: true

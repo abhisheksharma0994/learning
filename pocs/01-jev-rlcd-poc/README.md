@@ -17,7 +17,7 @@ instead of taken on faith. The package inside is `jev_rlcd_poc`.
 > cd learning/pocs/01-jev-rlcd-poc
 > ```
 >
-> The write-up that goes with it: **[RLCD without Jev, measured](https://abhisheksharma0994.github.io/learning/posts/jev-rlcd-measured/)**
+> The write-up that goes with it: **[RLCD without Jev, measured](https://abhisheksharma0994.github.io/learning/pocs/jev-rlcd-poc/)**
 > — what calibrated decisions are good for, and what they are not.
 
 ## What it does

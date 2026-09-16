@@ -7,7 +7,8 @@ permalink: /pocs/
 # Proofs of concept
 
 Each folder under `pocs/` in the [repo]({{ site.github_url }}) is one of these,
-self-contained and runnable from its own directory.
+self-contained and runnable from its own directory. Each has one page here, and
+that page is the full write-up.
 
 {% assign pocs = site.pocs | sort: "order" %}
 {% if pocs.size == 0 %}
@@ -30,11 +31,13 @@ self-contained and runnable from its own directory.
 
 ## Adding the next one
 
-1. Copy the POC into `pocs/NN-slug/` (zero-padded number, so the order is stable).
-2. Add `docs/_pocs/slug.md` with front matter — `order`, `title`, `summary`,
-   `repo_path`, `status` — and a short body describing what it does and how to run it.
-3. Add the write-up as `docs/_posts/YYYY-MM-DD-slug.md` and point `poc:` at the
-   folder it belongs to.
+Two files, and nothing else to update:
 
-The site builds the index, the POC list and the post list from those files, so
-nothing else needs editing.
+1. **Code** — `pocs/NN-slug/`, self-contained, with its own `README.md` saying what
+   to install and how to run it. Zero-padded number so the order stays stable.
+2. **The page** — `docs/_pocs/NN-slug.md`, with front matter (`order`, `title`,
+   `summary`, `repo_path`, `status`, `date`, `tags`) and the write-up as its body.
+   The filename becomes the URL: `docs/_pocs/02-thing.md` → `/pocs/02-thing/`.
+
+The index and the cards are generated from the front matter, so there is no list
+to keep in sync. Keep the write-up honest: the failures are the interesting part.

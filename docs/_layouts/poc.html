@@ -7,13 +7,13 @@ layout: default
     <p class="eyebrow">
       {% if page.order %}POC {{ page.order }}{% else %}POC{% endif %}
       {% if page.status %}· {{ page.status }}{% endif %}
-      {% if page.date %}· {{ page.date | date: "%B %Y" }}{% endif %}
+      {% if page.date %}· {{ page.date | date: "%B %-d, %Y" }}{% endif %}
     </p>
     <h1>{{ page.title }}</h1>
     {% if page.summary %}<p class="summary">{{ page.summary }}</p>{% endif %}
     <p class="meta">
       <a href="{{ site.github_url }}/tree/main/{{ page.repo_path }}">Browse the code →</a>
-      {% if page.post %}<a href="{{ page.post | relative_url }}">Read the write-up</a>{% endif %}
+      {% if page.tags.size > 0 %} · {{ page.tags | join: ", " }}{% endif %}
     </p>
   </header>
 
@@ -22,5 +22,5 @@ layout: default
 
 <nav class="post-footer">
   <a href="{{ '/pocs/' | relative_url }}">All POCs</a>
-  <a href="{{ '/posts/' | relative_url }}">All posts</a>
+  <a href="{{ site.github_url }}/tree/main/{{ page.repo_path }}">Code for this POC</a>
 </nav>

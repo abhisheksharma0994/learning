@@ -1,16 +1,16 @@
 # learning
 
 Proofs of concept, built and measured: what worked, what did not, and the numbers
-for both. Each POC is a self-contained folder you can clone and run, with a
-write-up published on the site.
+for both. Each POC is a self-contained folder you can clone and run, with its
+write-up published as a single page on the site.
 
-**Site:** https://abhisheksharma0994.github.io/learning/
+**Site:** https://abhisheksharma0994.github.io/learning/pocs/
 
 ## POCs
 
-| # | POC | What it is | Write-up |
+| # | POC | What it is | Page |
 | --- | --- | --- | --- |
-| 01 | [jev-rlcd-poc](pocs/01-jev-rlcd-poc/) | A Jev-shaped RLCD harness: typed decisions, single-pass probabilities, calibrated confidence, risk-coverage evaluation | [RLCD without Jev, measured](https://abhisheksharma0994.github.io/learning/posts/jev-rlcd-measured/) |
+| 01 | [jev-rlcd-poc](pocs/01-jev-rlcd-poc/) | A Jev-shaped RLCD harness: typed decisions, single-pass probabilities, calibrated confidence, risk-coverage evaluation | [RLCD without Jev, measured](https://abhisheksharma0994.github.io/learning/pocs/jev-rlcd-poc/) |
 
 ## Running a POC
 
@@ -35,26 +35,27 @@ learning/
   pocs/                   one self-contained folder per POC
     01-jev-rlcd-poc/      code, tests, examples, launcher, its own README
   docs/                   the GitHub Pages site (Jekyll, served from main:/docs)
-    _posts/               write-ups, one per POC
-    _pocs/                one page per POC; drives the site indexes
+    _pocs/                one page per POC — the page is the write-up
     _layouts/, assets/    templates and stylesheet
-    index.md, pocs.md, posts.md
+    index.md, pocs.md
 ```
 
-`pocs/` is the code, `docs/` is the published site. The numeric prefix on each
-POC folder keeps the order stable as more get added.
+`pocs/` is the code, `docs/` is the published site: one page per POC at
+`/pocs/<slug>/`, and nothing else. The numeric prefix on each POC folder keeps the
+order stable as more get added.
 
 ## Adding the next POC
 
+Two files, and nothing else to update:
+
 1. **Code** — `pocs/NN-slug/`, self-contained, with its own `README.md` that says
    what to install and how to run it. Assume the reader has only cloned the repo.
-2. **Site page** — `docs/_pocs/slug.md` with front matter (`order`, `title`,
-   `summary`, `repo_path`, `status`, optionally `post`) and a short body.
-3. **Write-up** — `docs/_posts/YYYY-MM-DD-slug.md` with front matter (`title`,
-   `date`, `description`, `poc`, `tags`).
+2. **The page** — `docs/_pocs/NN-slug.md`, with front matter (`order`, `title`,
+   `summary`, `repo_path`, `status`, `date`, `tags`) and the write-up as its body.
+   The filename becomes the URL: `docs/_pocs/02-thing.md` → `/pocs/02-thing/`.
 
-Both indexes and the post list are generated from those files, so there is
-nothing else to update. `docs/pocs.md` repeats this list for reference.
+The site builds its index and cards from that front matter, so there is no list to
+keep in sync. `docs/pocs.md` repeats these steps for reference.
 
 ## License
 
