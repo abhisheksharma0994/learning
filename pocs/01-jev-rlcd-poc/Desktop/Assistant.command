@@ -17,9 +17,19 @@
 set -uo pipefail
 
 # Resolve this script's own location, so the launcher works from wherever the
-# repo was cloned. Nothing here assumes a home directory or a fixed path.
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
+# repo was cloned and from a symlink -- which is how it usually gets onto a
+# Desktop. Nothing here assumes a home directory or a fixed path.
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do
+  LINK_DIR="$(cd -P -- "$(dirname -- "$SOURCE")" && pwd)"
+  SOURCE="$(readlink -- "$SOURCE")"
+  case "$SOURCE" in
+    /*) ;;                        # already absolute
+    *) SOURCE="$LINK_DIR/$SOURCE" # relative to the symlink's directory
+  esac
+done
+SCRIPT_DIR="$(cd -P -- "$(dirname -- "$SOURCE")" && pwd)"
+PROJECT="$(cd -P -- "$SCRIPT_DIR/.." && pwd)"
 PYTHON="$PROJECT/.venv/bin/python"
 
 # Pin a different model here, or export MODEL=... before launching. Empty means
