@@ -105,7 +105,7 @@ tests/               python -m unittest discover -s tests
 ## Models: what gets downloaded, and where
 
 **You may not need to download anything.** Half of this repo runs on the standard
-library alone. Only the three examples that load a real model need weights, and
+library alone. Only the five examples that load a real model need weights, and
 those fetch them for you on first run.
 
 | What you run | Model | Download |
@@ -142,7 +142,7 @@ By default, in your Hugging Face cache:
 | --- | --- |
 | Default | `~/.cache/huggingface/hub/` |
 | If `HF_HOME` is set | `$HF_HOME/hub/` |
-| This machine | `HF_HOME=/Users/ashar/Models/huggingface` → `/Users/ashar/Models/huggingface/hub/` |
+| Example | `HF_HOME=/Users/<name>/Models/huggingface` → `/Users/<name>/Models/huggingface/hub/` |
 
 A model ends up as `models--Qwen--Qwen2.5-1.5B-Instruct/` inside that hub
 directory. To keep the weights on an external drive or off your boot disk, point
@@ -225,7 +225,7 @@ if not accepted:
 
 **Or plug in any scorer.** `scorer.FunctionScorer` adapts a callable, and
 `backends.OpenAICompatibleLogprobsScorer` swaps the local model for any hosted
-endpoint that returns logprobs -- same pipeline, no other change:
+endpoint that returns logprobs — same pipeline, no other change:
 
 ```python
 from jev_rlcd_poc.backends import OpenAICompatibleLogprobsScorer
@@ -372,7 +372,7 @@ probabilities.
 
 `examples/assistant.py` is a general chat assistant. The honest version of the
 speed claim: generation costs one forward pass per *token*, a decision costs one
-pass in total however many labels are in play -- so the loop spends a pass on the
+pass in total however many labels are in play — so the loop spends a pass on the
 decision and generates only the prose.
 
 ```bash

@@ -11,7 +11,7 @@ date: 2026-09-15
 tags: [jev, rlcd, calibration, llm, evals]
 ---
 
-TypeSafe AI announced Jev today, a "System One" model built on **RLCD** —
+[TypeSafe AI announced Jev today](https://typesafe.ai/blog/introducing-system-one-models-and-jev), a "System One" model built on **RLCD** —
 reinforcement learning for calibrated decisions. The claims are specific enough to
 check, which is what makes them worth checking: typed outputs that cannot be type
 errors, 70–500 ms responses, a parallel sampler that emits every output in one
@@ -41,7 +41,7 @@ chat with the thing, and where it genuinely earns its place in a system.
 
 
 Everything below is measured on Qwen2.5-1.5B-Instruct (0.5B where noted) on an
-M1 Mac with MPS — except the calibration numbers, which come from a simulated
+M5 Pro Mac with MPS — except the calibration numbers, which come from a simulated
 model that is deliberately overconfident, because there the metric is the point
 rather than the model. Each section says which it is.
 
@@ -208,18 +208,11 @@ reused by every later run. `chat.py`'s 0.5B model is 953 MB. Nothing is gated an
 no token is needed, and the POC's README has the pre-download command, the
 cache-location options, and how to pick a different model with `--model`.
 
-There is a double-clickable launcher at `Desktop/Assistant.command` — it resolves
-its own location, so it works from wherever you clone the repo, and it warns you
-before the first-run download — that starts this in interactive mode against the
-1.5B model. It loads and fits the calibration
-in about 7 seconds, then greets you with what it measured:
+`assistant.py --report` states what it measured before the first turn:
 
 ```
-Ready in 6.8 s.
-  decision     general or arithmetic, 99.5% accurate on held-out data (ECE 0.0069)
-  gate         auto-decides 100% of turns at 0.5% error, threshold 0.568
-  arithmetic   answered by a calculator, not generated
-  everything else is generated prose, one token at a time
+decision     general or arithmetic, 99.5% accurate on held-out data (ECE 0.0069)
+gate         auto-decides 100% of turns at 0.5% error, threshold 0.568
 ```
 
 ---
