@@ -1,0 +1,44 @@
+title: Learning
+tagline: POCs, measured properly
+description: >-
+  Proofs of concept I build, written up with honest numbers: what worked, what
+  did not, and how to run each one locally.
+author: Abhishek Sharma
+
+# GitHub Pages serves this repo at /learning, so baseurl matters: every internal
+# link goes through the relative_url filter.
+url: "https://abhisheksharma0994.github.io"
+baseurl: "/learning"
+github_url: "https://github.com/abhisheksharma0994/learning"
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+# Posts live in _posts and get clean URLs: /posts/<slug>/ (no date in the path).
+# Set per-scope rather than globally, so plain pages keep their own paths.
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+      permalink: /posts/:title/
+  - scope:
+      path: ""
+      type: pocs
+    values:
+      layout: poc
+
+# One page per POC on the site, alongside the code under /pocs in the repo.
+collections:
+  pocs:
+    output: true
+    permalink: /pocs/:name/
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - .jekyll-cache

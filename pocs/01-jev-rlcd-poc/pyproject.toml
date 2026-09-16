@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jev-rlcd-poc"
+version = "0.1.0"
+description = "A Jev-shaped RLCD harness: typed decisions, single-pass probabilities, calibrated confidence, risk-coverage evaluation"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+# The local single-pass scorer backend.
+local = [
+    "torch>=2.4",
+    "transformers>=4.44",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
