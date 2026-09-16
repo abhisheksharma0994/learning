@@ -11,20 +11,31 @@ poc_name: "Jev RLCD POC"
 tags: [jev, rlcd, calibration, llm, evals]
 ---
 
-TypeSafe AI recently announced Jev, a "System One" model for **RLCD** —
-reinforcement learning for calibrated decisions — with the kind of claims that are
-hard to argue with and hard to check: typed decisions, no type errors *by
-construction*, 70–500 ms decisions, and higher throughput at lower cost through
-parallel work.
+TypeSafe AI announced Jev today, a "System One" model built on **RLCD** —
+reinforcement learning for calibrated decisions. The claims are specific enough to
+check, which is what makes them worth checking: typed outputs that cannot be type
+errors, 70–500 ms responses, a parallel sampler that emits every output in one
+query, output tokens priced at zero because none are generated, and 193.6x faster
+and 444.6x cheaper on their own workflow evals.
 
-I wanted to know which of those claims survive contact with an off-the-shelf
-model and a small harness, so I built one and measured everything. This post is
-the result: what RLCD is, what a harness reproduces, what it provably cannot,
-how to chat with the thing, and where it genuinely earns its place in a system.
+Worth saying up front: that announcement ships with its own nuance sections —
+which numbers are not empirical, where the reference models bias the comparison,
+which of the demo inputs flatter the method. Most launches do not do that, and it
+makes the claims easier to test rather than harder.
 
-Everything below is measured on Qwen2.5-1.5B-Instruct (and 0.5B where noted) on
-an M1 Mac with MPS. The code is in this repo and you can run all of it without a
-GPU, an API key, or an internet connection.
+I wanted to know which of those claims a harness can reproduce with an
+off-the-shelf model, so I built one and measured everything. This post is the
+result: what RLCD is, what a harness reproduces, what it provably cannot, how to
+chat with the thing, and where it genuinely earns its place in a system.
+
+Everything below is measured on Qwen2.5-1.5B-Instruct (0.5B where noted) on an
+M1 Mac with MPS — except the calibration numbers, which come from a simulated
+model that is deliberately overconfident, because there the metric is the point
+rather than the model. Each section says which it is.
+
+The code is all in this repo. The calibration half runs with no GPU, no API key
+and no network at all; the model-backed examples fetch their weights once, and the
+POC's README says exactly what gets downloaded and where it lands.
 
 ---
 
@@ -56,7 +67,7 @@ decomposed into what is reproducible, and how much of it is real:
 | --- | --- | --- |
 | Typed output, no type errors | **Yes, exactly** | Grammar-constrained decoding. Free. The least novel part. |
 | One pass scores every candidate | **Yes, exactly** | Measured flat: 8 labels cost 0.98x of 2 labels. |
-| Fast and cheap per decision | **Partly** | True per decision, false per turn — see [below](#the-claim-that-does-not-survive). |
+| Fast and cheap per decision | **Partly** | True per decision, false per turn — see [below](#where-parallel-actually-pays). |
 | Probabilities you can act on | **No** | Raw logprobs are overconfident. This needs calibration, and post-hoc calibration is not RLCD. |
 
 ---
@@ -174,6 +185,11 @@ bot  > The Moon's gravity pulls on Earth's oceans, causing them to bulge outward
        and creating high tides. This is known as the tidal effect.
 ```
 
+Both decisions cost the same, because they are the same mechanism: one forward
+pass over the prompt's context, whatever the label count. The cost tracks the
+context — 24 ms for those one-line questions, 30–37 ms for the longer prompts in
+the benchmarks below — and never the number of options.
+
 The 1.5B weights are fetched from the Hugging Face Hub on first run: 2.9 GB into
 `$HF_HOME/hub`, or `~/.cache/huggingface/hub` if that is unset, cached once and
 reused by every later run. `chat.py`'s 0.5B model is 953 MB. Nothing is gated and
@@ -221,7 +237,7 @@ advance**, then let the calibrated confidence decide whether to act on it.
 
 ---
 
-## The claim that does not survive
+## Where "parallel" actually pays
 
 "Higher tokens per second through parallel work" needs splitting into two
 different things, and only one of them is special to decision models.
@@ -281,9 +297,13 @@ python examples/bench_throughput.py --repeats 3 --max-new-tokens 400
 
 **What survives:** a decision costs **one pass instead of twenty**, emits **zero
 tokens you are billed for**, and does not grow a KV cache. That is a real
-per-request cost reduction of roughly the answer length — a claim about the shape
-of your workload, not about tokens per second. The speedup is **per decision, not
-per turn**, and any honest benchmark should say so out loud.
+per-request cost reduction of roughly the answer length, and it is the mechanism
+behind pricing output tokens at zero — which does reproduce here, because the
+arithmetic turn above generated nothing at all.
+
+But it is a claim about the shape of your workload, not about tokens per second
+on the same weights. The speedup is **per decision, not per turn**, and any honest
+benchmark should say so out loud.
 
 ---
 
@@ -423,9 +443,10 @@ python examples/bench_throughput.py --repeats 3
 python examples/bench_parallel.py --batches 1 4 16 64
 ```
 
-The first two commands need nothing installed beyond Python 3.10+. The rest load
-a real model, so they need `pip install "jev-rlcd-poc[local]"` (torch and
-transformers) — or swap the scorer for the hosted backend and skip the local
+Only `demo_report.py`, and the test suite, run with nothing installed beyond
+Python 3.10+. Every other command loads a real model, so it needs
+`pip install "jev-rlcd-poc[local]"` (torch and transformers) plus the one-time
+weight download — or swap the scorer for the hosted backend and skip the local
 weights entirely.
 
 **The one-sentence version:** a calibrated decision layer is not a faster model —
