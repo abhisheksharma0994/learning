@@ -5,6 +5,7 @@
   --rule: #e4e4df;
   --link: #1a5fb4;
   --code-bg: #f4f4f1;
+  --stripe: rgba(128, 128, 128, 0.07);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -15,6 +16,7 @@
     --rule: #2e2e34;
     --link: #7cacf8;
     --code-bg: #212127;
+    --stripe: rgba(255, 255, 255, 0.04);
   }
 }
 
@@ -119,24 +121,38 @@ pre {
 
 pre code { background: none; padding: 0; font-size: 1em; }
 
-/* Tables are the data in these posts, so they get room and stay scrollable. */
+/* Tables carry the data in these posts, so they have to read as tables: wrapping
+   cells, ruled edges, a tinted header. Do NOT put `white-space: nowrap` on body
+   cells. Prose in a cell then cannot wrap, the table grows far wider than the
+   column, and it ends up looking like a strip of loose text in a scroll box
+   rather than a table. Keep nowrap for headers only, which are short. */
 table {
   border-collapse: collapse;
   width: 100%;
-  margin: 1.4rem 0;
-  font-size: 0.9rem;
+  margin: 1.5rem 0;
+  font-size: 0.89rem;
+  /* A scroll box on the table itself. Inert when the content fits, and when a
+     table is genuinely too wide for the column it scrolls instead of pushing the
+     whole page sideways. Measured: borders still collapse correctly (0px between
+     adjacent cells) with display: block. */
   display: block;
   overflow-x: auto;
 }
 
 th, td {
   text-align: left;
+  vertical-align: top;
   padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid var(--rule);
-  white-space: nowrap;
+  border: 1px solid var(--rule);
+  overflow-wrap: anywhere;
 }
 
-th { font-weight: 620; }
+th {
+  font-weight: 620;
+  background: var(--code-bg);
+}
+
+tbody tr:nth-child(even) { background: var(--stripe); }
 
 /* ------------------------------------------------------------------ meta */
 

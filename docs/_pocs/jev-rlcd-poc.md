@@ -31,6 +31,19 @@ reliability claim actually lives, which is why it gets most of the code and test
 
 ## What it showed
 
+Headline numbers, each from a run and each measured on held-out data:
+
+| measurement | result |
+| --- | --- |
+| Held-out ECE, raw → calibrated | **0.2696 → 0.0152**, accuracy identical at 0.725 |
+| Throughput, 1.5B, plain vs with the layer | input **3751 tok/s** both; output 52.5 vs 51.9 tok/s |
+| Decision cost, 2 labels vs 8 labels | 24.3 ms vs 23.8 ms — **flat** |
+| Turns auto-decided at ≤0.5% error (1.5B routing) | 100% |
+| Intents auto-routed at 12.3% error (0.5B, six labels) | 31.2% |
+| Test suite | **105 passing**, 6 opt-in skipped |
+
+Then the parts that need a sentence each:
+
 - **Calibration changes the numbers, never the decisions.** Held-out ECE dropped
   from 0.2696 to 0.0152 with accuracy identical at 0.725, because both calibrators
   are monotone.
