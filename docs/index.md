@@ -1,6 +1,7 @@
 ---
 layout: default
 title: null
+permalink: /
 ---
 
 # POCs, measured properly

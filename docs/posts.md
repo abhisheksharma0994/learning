@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Write-ups
+permalink: /posts/
 ---
 
 # Write-ups

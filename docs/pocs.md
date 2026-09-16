@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Proofs of concept
+permalink: /pocs/
 ---
 
 # Proofs of concept
