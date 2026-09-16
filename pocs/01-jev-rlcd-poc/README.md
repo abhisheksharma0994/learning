@@ -449,10 +449,10 @@ python examples/bench_throughput.py --repeats 3
 Qwen2.5-1.5B-Instruct on MPS, one 357-character prompt asking for a bracket-
 balancing function with docstrings and tests, greedy decoding, median of 3:
 
-| config | input tokens | output tokens | prefill tok/s | decode tok/s | decide ms | total ms |
+| config | input tokens | **input tok/s** (prefill) | output tokens | **output tok/s** (decode) | decide ms | total ms |
 | --- | --- | --- | --- | --- | --- | --- |
-| plain | 112 | 400 | 3751 | 52.5 | — | 7652 |
-| with RLCD | 112 **+ 92** | 400 | 3751 | 51.9 | 30 | 7777 |
+| plain | 112 | **3751** | 400 | **52.5** | — | 7652 |
+| with RLCD | 112 **+ 92** | **3751** | 400 | **51.9** | 30 | 7777 |
 
 Rates do not move, and they cannot: prefill throughput is a property of the model
 and the prompt length, decode throughput a property of the model and the KV cache.

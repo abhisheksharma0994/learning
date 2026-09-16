@@ -252,17 +252,32 @@ because batching amortises a weight load that decode was paying *per token*.
 Under heavy batching generation closes most of the gap, and any serving stack
 gets that from continuous batching. It is not a property of the model.
 
-**And the rates on the same weights never move.** Same model, same prompt, same
-400 output tokens, with and without the decision layer:
+**And the rates on the same weights never move.** Here is the input and output
+throughput for **Qwen2.5-1.5B-Instruct**, running the same prompt twice — once
+plain, once through the decision layer:
 
-| config | input tokens | output tokens | prefill tok/s | decode tok/s | decide ms | total ms |
+| config | input tokens | **input tok/s** (prefill) | output tokens | **output tok/s** (decode) | decide ms | total ms |
 | --- | --- | --- | --- | --- | --- | --- |
-| plain | 112 | 400 | 3751 | 52.5 | — | 7652 |
-| with RLCD | 112 **+ 92** | 400 | 3751 | 51.9 | 30 | 7777 |
+| plain | 112 | **3751** | 400 | **52.5** | — | 7652 |
+| with RLCD | 112 **+ 92** | **3751** | 400 | **51.9** | 30 | 7777 |
 
-Generated text was byte-identical. Prefill throughput is a property of the model
-and the prompt length; decode throughput a property of the model and the KV cache.
-The decision layer touches neither.
+Qwen2.5-1.5B-Instruct on MPS, one 357-character prompt asking for a bracket-
+balancing function, greedy decoding, median of 3 runs, the same 400-token cap in
+both rows (so 400 is a ceiling that both hit, not a natural stop).
+
+Input throughput is the prefill — one pass over the prompt. Output throughput is
+the decode loop — one pass per generated token. Both are properties of the model
+and the hardware, and the decision layer touches neither, which is why the two
+rows are equal. Read the 51.9 against 52.5 as noise from timing a prefill
+separately and subtracting it, not as a speedup: the rates do not move.
+
+What does change is the token **count**. The decision needs its own prompt, so the
+input grows by 92 tokens and the turn pays a second forward pass; the 400 output
+tokens are identical, and the generated text was byte-identical in both runs.
+
+```bash
+python examples/bench_throughput.py --repeats 3 --max-new-tokens 400
+```
 
 **What survives:** a decision costs **one pass instead of twenty**, emits **zero
 tokens you are billed for**, and does not grow a KV cache. That is a real
